@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: project-k8s-deployment
+  name: project-k8s-new-deployment
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: project-k8s-deployment
+      app: project-k8s-new-deployment
   template:
     metadata:
       labels:
-        app: project-k8s-deployment
+        app: project-k8s-new-deployment
     spec:
       containers:
-      - name: project-k8s-deployment
+      - name: project-k8s-new-deployment
         image: deva594/basicproject:latest
         ports:
         - containerPort: 5000
@@ -24,11 +24,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: project-k8s-deployment
+  name: project-k8s-new-deployment
 spec:
   type: LoadBalancer
   selector:
-    app: project-k8s-deployment
+    app: project-k8s-new-deployment
   ports:
   - protocol: TCP
     port: 80
