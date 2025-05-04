@@ -33,6 +33,6 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 5000 #container port
-    nodePort: 30080
+    nodePort: 32080
 
 
