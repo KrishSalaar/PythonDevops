@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Login - AWS EKS Deployment Documentation{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h1><i class="fas fa-lock"></i> Access Documentation</h1>
+            <p>Login to view the detailed deployment steps</p>
+        </div>
+        
+        <form class="login-form" method="POST" action="{{ url_for('login') }}">
+            <div class="form-group">
+                <label for="username"><i class="fas fa-user"></i> Username</label>
+                <input type="text" id="username" name="username" required autocomplete="off">
+            </div>
+            
+            <div class="form-group">
+                <label for="password"><i class="fas fa-key"></i> Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="login-btn">
+                <span>Login</span>
+                <i class="fas fa-sign-in-alt"></i>
+            </button>
+        </form>
+        
+        <div class="login-footer">
+            <p>Demo credentials:</p>
+            <p>Username: <strong>demo</strong> | Password: <strong>demo123</strong></p>
+        </div>
+    </div>
+    
+    <div class="login-info">
+        <div class="tech-stack">
+            <h2>Technology Stack</h2>
+            <div class="tech-icons">
+                <div class="tech-icon"><i class="fab fa-aws"></i><span>AWS</span></div>
+                <div class="tech-icon"><i class="fab fa-jenkins"></i><span>Jenkins</span></div>
+                <div class="tech-icon"><i class="fab fa-docker"></i><span>Docker</span></div>
+                <div class="tech-icon"><i class="fab fa-python"></i><span>Python</span></div>
+                <div class="tech-icon"><i class="fas fa-dharmachakra"></i><span>Kubernetes</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

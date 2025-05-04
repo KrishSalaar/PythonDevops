@@ -1,0 +1,457 @@
+{% extends "base.html" %} {% block title %}Documentation - AWS EKS Deployment{%
+endblock %} {% block content %}
+<div class="documentation-container">
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h2>Deployment Steps</h2>
+    </div>
+    <ul class="step-nav">
+      {% for step in steps %}
+      <li class="step-item" data-step="{{ step.id }}">
+        <span class="step-number">{{ step.id }}</span>
+        <span class="step-title">{{ step.title }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+
+  <div class="content-area">
+    <div class="welcome-message">
+      <h1>Welcome to the AWS EKS Deployment Documentation</h1>
+      <p>
+        This documentation provides a step-by-step guide for deploying a Python
+        application using Jenkins agents on AWS EKS. Navigate through the steps
+        using the sidebar.
+      </p>
+    </div>
+
+    {% for step in steps %}
+    <div class="step-content" id="step-{{ step.id }}">
+      <div class="step-header">
+        <span class="step-badge">Step {{ step.id }}</span>
+        <h2>{{ step.title }}</h2>
+      </div>
+
+      <div class="step-details">
+        <p>{{ step.content }}</p>
+
+        {% if step.id == 1 %}
+        <div class="step-section">
+          <h3>Project Repository Setup</h3>
+          <ol>
+            <li>Create a new Git repository for your Python application.</li>
+            <li>Initialize the repository with a README</li>
+            <li>
+              Set up branch where the application code will be pushed to the
+              branch
+            </li>
+          </ol>
+        </div>
+        {% endif %} {% if step.id == 2 %}
+        <div class="step-section">
+          <h3>AWS Account Setup</h3>
+          <ol>
+            <li>
+              Use your existing AWS Account or create a new account with
+              appropriate credentials
+            </li>
+            <li>
+              Create 2 new instances of type t3.medium since the jenkins, docker
+              config would be heavy for a free tier instance
+            </li>
+            <li>Name 2 instances as Worker Server and Master Server</li>
+          </ol>
+        </div>
+        {% endif %} {% if step.id == 3 %}
+        <div class="step-section">
+          <h3>Jenkins Configuration</h3>
+          <ol>
+            <li>
+              Install required Jenkins plugins:
+              <ul>
+                <li>AWS Integration</li>
+                <li>Docker Pipeline</li>
+                <li>Kubernetes Continuous Deploy</li>
+                <li>AWS Credentials</li>
+              </ul>
+            </li>
+            <li>
+              Configure Jenkins credentials for AWS, Docker Registry, and
+              Kubernetes.
+            </li>
+            <li>Set up Jenkins agents with necessary tools installed.</li>
+            <li>Here the Master Server will consist Jenkins</li>
+            <li>The Worker Server will consist Java and Docker</li>
+          </ol>
+          <h3>The following Commands will be used against Master Server</h3>
+          <ol>
+            <li>
+              For this to be done we should connect with our Master Server from
+              the AWS Console
+            </li>
+          </ol>
+          <h4>Add the Jenkins repo using the following command:</h4>
+          <div class="code-block">
+            <button class="copy-btn" title="Copy to clipboard">
+              <i class="fas fa-copy"></i>
+            </button>
+            <pre><code> sudo wget -O /etc/yum.repos.d/jenkins.repo \
+    https://pkg.jenkins.io/redhat-stable/jenkins.repo</code></pre>
+          </div>
+          <h4>
+            Import a key file from Jenkins-CI to enable installation from the
+            package:
+          </h4>
+          <div class="code-block">
+            <button class="copy-btn" title="Copy to clipboard">
+              <i class="fas fa-copy"></i>
+            </button>
+            <pre><code> sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+ sudo yum upgrade
+            </code></pre>
+          </div>
+          <h4>Install Java:</h4>
+          <div class="code-block">
+            <button class="copy-btn" title="Copy to clipboard">
+              <i class="fas fa-copy"></i>
+            </button>
+            <pre><code> sudo yum install java-17-amazon-corretto -y</code></pre>
+          </div>
+          <h4>Install Jenkins:</h4>
+          <div class="code-block">
+            <button class="copy-btn" title="Copy to clipboard">
+              <i class="fas fa-copy"></i>
+            </button>
+            <pre><code> sudo yum install jenkins -y</code></pre>
+          </div>
+          <h4>Enable and Start the Jenkins Server:</h4>
+          <div class="code-block">
+            <button class="copy-btn" title="Copy to clipboard">
+              <i class="fas fa-copy"></i>
+            </button>
+            <pre><code> sudo systemctl enable jenkins 
+ sudo systemctl start jenkins
+            </code></pre>
+          </div>
+          <h4>
+            Check the status of the Jenkins Service using the below command
+          </h4>
+          <div class="code-block">
+            <button class="copy-btn" title="Copy to clipboard">
+              <i class="fas fa-copy"></i>
+            </button>
+            <pre><code>sudo systemctl status jenkins</code></pre>
+          </div>
+          <h3>The following commands will be used against Worker Server</h3>
+          <h4>Install Java:</h4>
+          <div class="code-block">
+            <button class="copy-btn" title="Copy to clipboard">
+              <i class="fas fa-copy"></i>
+            </button>
+            <pre><code> sudo yum install java-17-amazon-corretto -y</code></pre>
+          </div>
+        </div>
+        {% endif %} {% if step.id == 4 %}
+        <div class="step-section">
+          <h3>AWS EKS Cluster Setup</h3>
+          <ol>
+            <li>
+              Create an EKS cluster using eksctl or AWS Management Console.
+            </li>
+            <li>Configure IAM roles and policies for EKS.</li>
+            <li>Set up worker nodes with appropriate instance types.</li>
+            <li>Select t3.medium instance types to avoid huge costs</li>
+            <li>Configure security groups and networking.</li>
+          </ol>
+        </div>
+        {% endif %} {% if step.id == 5 %}
+        <div class="step-section">
+          <h3>Containerizing the Python Application</h3>
+          <ol>
+            <li>Create a Dockerfile for the Python application.</li>
+            <li>Define multi-stage builds for efficiency.</li>
+            <li>Implement best practices for container security.</li>
+          </ol>
+          <h4>The below is the docker file for the application</h4>
+          <div class="code-block">
+            <button class="copy-btn" title="Copy to clipboard">
+              <i class="fas fa-copy"></i>
+            </button>
+            <pre><code>#Base Image
+FROM python:3.9-slim
+
+#Set working dir
+WORKDIR /app
+
+#Copy in the requirements
+COPY requirements.txt .
+
+#install requirements
+RUN pip install -r requirements.txt
+
+#Sources files
+COPY . .
+
+#Expose port
+EXPOSE 5000
+
+#Start server
+CMD ["python3", "run.py"]
+
+</code></pre>
+          </div>
+        </div>
+        {% endif %} {% if step.id == 7 %}
+        <div class="step-section">
+          <h3>CI/CD Pipeline Implementation</h3>
+          <ol>
+            <li>Create a Jenkinsfile with complete CI/CD pipeline.</li>
+            <li>
+              Implement stages for Repo Checkout,Code Building, Docker Build,
+              Docker Push, Kubernetes deployment.
+            </li>
+          </ol>
+          <h3>The Following is the build script</h3>
+          <h4>Important Steps to consider</h4>
+          <ol>
+            <li>Update the Repository Name, Branch according to your repo</li>
+            <li>
+              Update the Docker Stage which has been created using Docker Hub
+              with your own
+            </li>
+            <li>
+              Update your EKS Cluster name which has been mentioned in the AWS
+            </li>
+          </ol>
+          <div class="code-block">
+            <button class="copy-btn" title="Copy to clipboard">
+              <i class="fas fa-copy"></i>
+            </button>
+            <pre><code>
+                pipeline {
+    agent {
+        label 'worker'
+    }
+    environment {
+        dockerhub = credentials('dockerhub')
+        awscred = credentials('awscredentials')
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scmGit(branches: [[name: '<branch_name>']], extensions: [], userRemoteConfigs: [[url: 'Repo Link']])
+            }
+        }
+        stage('Code Build Stage'){
+            steps {
+                sh 'sudo yum install -y pip'
+                sh 'pip install -r requirements.txt'
+            }
+        }
+        stage('docker build'){
+            steps {
+                sh 'docker -v'
+                sh 'docker build -t docker_build_name .'
+            }
+        }
+        stage('dockerPush')
+        {
+            steps {
+                sh 'echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin'
+                sh 'docker push docker_build_name'
+            }
+        }
+        stage('kubernetes setup'){
+            steps{
+                sh 'kubectl version --client'
+                sh 'aws eks update-kubeconfig --region region-name --name cluster-name'
+                sh 'kubectl version'
+                
+            }
+        }
+        stage('kubernetes deployment')
+        {
+            steps{
+                sh 'kubectl apply -f Application.yaml' 
+            }
+        }
+    }
+}
+            </code></pre>
+          </div>
+        </div>
+        {% endif %} {% if step.id == 6 %}
+        <div class="step-section">
+          <h3>Kubernetes Deployment Configuration</h3>
+          <ol>
+            <li>Create Kubernetes deployment manifests.</li>
+            <li>Configure service definitions.</li>
+          </ol>
+          <h4>The following will the Application.yaml for Kubernetes</h4>
+          <div class="code-block">
+            <button class="copy-btn" title="Copy to clipboard">
+              <i class="fas fa-copy"></i>
+            </button>
+            <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-k8s-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: project-k8s-deployment
+  template:
+    metadata:
+      labels:
+        app: project-k8s-deployment
+    spec:
+      containers:
+      - name: project-k8s-deployment
+        image: docker_image_name
+        ports:
+        - containerPort: 5000
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: project-k8s-deployment
+spec:
+  type: LoadBalancer
+  selector:
+    app: project-k8s-deployment
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000 #container port
+    nodePort: 30080
+
+
+</code></pre>
+          </div>
+        </div>
+        {% endif %}
+                {% if step.id == 8 %}
+        <div class="step-section">
+          <h3>Hooray!!</h3>
+          <ol>
+            <li>Check whether the application is deployed successfully</li>
+            <li>The URL of the application will be present in the Load Balancer Service in AWS</li>
+            <li>
+             If the URL is successfully directing to the application, then the project is successfully deployed
+            </li>
+          </ol>
+        </div>
+        {% endif %} 
+
+        <div class="navigation-buttons">
+          {% if step.id > 1 %}
+          <button class="nav-btn prev-btn" data-target="{{ step.id - 1 }}">
+            <i class="fas fa-arrow-left"></i> Previous
+          </button>
+          {% endif %} {% if step.id < steps|length %}
+          <button class="nav-btn next-btn" data-target="{{ step.id + 1 }}">
+            Next <i class="fas fa-arrow-right"></i>
+          </button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Hide all step content initially except the welcome message
+    const stepContents = document.querySelectorAll(".step-content");
+    stepContents.forEach((content) => {
+      content.style.display = "none";
+    });
+
+    // Navigation functionality for sidebar
+    const stepItems = document.querySelectorAll(".step-item");
+    stepItems.forEach((item) => {
+      item.addEventListener("click", function () {
+        const stepNum = this.getAttribute("data-step");
+        showStep(stepNum);
+
+        // Highlight active step in sidebar
+        stepItems.forEach((i) => i.classList.remove("active"));
+        this.classList.add("active");
+      });
+    });
+
+    // Navigation buttons functionality
+    const navButtons = document.querySelectorAll(".nav-btn");
+    navButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        const targetStep = this.getAttribute("data-target");
+        showStep(targetStep);
+
+        // Highlight active step in sidebar
+        stepItems.forEach((i) => i.classList.remove("active"));
+        document
+          .querySelector(`.step-item[data-step="${targetStep}"]`)
+          .classList.add("active");
+      });
+    });
+
+    // Function to show a specific step
+    function showStep(stepNum) {
+      // Hide all steps
+      stepContents.forEach((content) => {
+        content.style.display = "none";
+      });
+
+      // Hide welcome message
+      document.querySelector(".welcome-message").style.display = "none";
+
+      // Show selected step
+      const targetStep = document.getElementById(`step-${stepNum}`);
+      targetStep.style.display = "block";
+
+      // Add entrance animation
+      targetStep.classList.add("slide-in");
+      setTimeout(() => {
+        targetStep.classList.remove("slide-in");
+      }, 500);
+    }
+
+    // Code copy functionality
+    const copyButtons = document.querySelectorAll(".copy-btn");
+    copyButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        const codeBlock = this.nextElementSibling.querySelector("code");
+        const textToCopy = codeBlock.textContent;
+
+        // Copy to clipboard
+        navigator.clipboard
+          .writeText(textToCopy)
+          .then(() => {
+            // Visual feedback
+            this.classList.add("copied");
+
+            // Change icon temporarily
+            const icon = this.querySelector("i");
+            icon.classList.remove("fa-copy");
+            icon.classList.add("fa-check");
+
+            // Reset after 2 seconds
+            setTimeout(() => {
+              this.classList.remove("copied");
+              icon.classList.remove("fa-check");
+              icon.classList.add("fa-copy");
+            }, 2000);
+          })
+          .catch((err) => {
+            console.error("Could not copy text: ", err);
+          });
+      });
+    });
+  });
+</script>
+{% endblock %}

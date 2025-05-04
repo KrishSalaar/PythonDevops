@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask SPA Project</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div id="app">
+        <div class="scrolling-text">
+            <span>Congratulations on your Python Flask project!</span>
+        </div>
+        <img src="{{ url_for('static', filename='images/jenkins-project.png') }}" alt="Flask Logo" class="logo">
+        <img src="{{ url_for('static', filename='images/jenkins.png') }}" alt="Python Logo" class="logo">
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
